@@ -80,7 +80,7 @@ print("=" * 100)
 # Python: 변수 생성 -> num
 # Python: 변수 호출 -> num = None
 
-student_name = None # 절대 사용 금지!
+# student_name = None # 절대 사용 금지!
 student_name = "" # 적극 권장
 
 # "Null Pointer Exception"
@@ -107,9 +107,57 @@ print(num)  # 출력 : 10
 #   * 초기화: 초기 변수를 생성하면 쓰레기 파일들이 존재
 #   * 변수에 값을 대입하면 공간이 초기화 되고 값만 저장!
 
-# 좋은 개발짜! : 누구나 알아보기 쉽게 코드를 작성하는 인간
+# 7. 명명규칙(Naming Rule)
+# * 변수, 함수, 클래스 등의 사용자 정의 이름에 사용
+# * 명확하고 알아보기 쉽게!
 
-# 회사 : 항상 신기술, 새로나온 코드 기법 사용 X
+# 1. 영문, 대소문자, 숫자, 특수문자(_)만 사용
+# 2. 숫자로 시작할 수 없음
+# 3. 영어 대소문자 구별
+# 4. 예약어 사용 불가
+#    예약어:Python에서 미리 선정하여 사용중이 ㄴ키워드
+# ex) print, for, while, if, else, class, and, return... 등등
+
+
+# 8.Naming Method
+# - 변수, 함수, 클래스 등의 사용자 정의 이름에 사용하는 기법
+# - 프로그래밍 언어별로 사용하는 Naming Method가 다름
+#
+#   1.snake_case: 소문자만 사용, 합성어는 '_'사용
+#   ex) chosun_student_name
+#   2.camelCase: 첫글자 소문자, 합성어 첫글자 대문자
+#   ex) chosunStudentName
+#   3.PascalCase: 첫글자 대문자, 합성어 첫글자 대문자
+#   ex) ChosunStudentName
+#             변수           함수            클래스
+# Java, C: camelCase     camelCase()       PascalCase
+# Python:  snake_case    snake_case()      PascalCase
+#
+# 9.동적 출력
+print("=" * 100)
+student_num = 20233105
+student_name = "LSM"
+# 출력 예: "조선대학교 20233105, LSM 입니다."
+print("조선대학교 20233105, LSM 입니다.")   # 하드 코딩
+# 1. format() - old
+print("조선대학교 {} {} 입니다.".format(student_num, student_name))
+# 2. f-string - new
+print(f"조선대학교 {student_num}, {student_name} 입니다.")
+
+# 10.간단한 사칙연산
+# + : 더하기
+# - : 빼기
+# * : 곱하기
+# ** or ^ : 제곱
+# / : 나누기
+# 5/2 : 2.5
+# % : 나누기의 나머지 값
+# 5%2 : 1
+# // : 나누기(몫)
+# 5//2 : 2
+# 좋은 개발자 : 누구나 알아보기 쉽게 코드를 작성하는
+
+# 회사 : 항상 신기술, 새로 나온 코드 기법 사용 X
 
 # 3.8
 # 3.9 새로운 기법 추가!
