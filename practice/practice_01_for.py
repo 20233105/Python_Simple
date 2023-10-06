@@ -19,7 +19,8 @@
 # 문제4) list b에서 최소값 찾기
 b = [22, 1, 4, 7, 98]
 num_min = b[0]
-for i in range(0, len(b)):
+for i in range(0, len(b)+1):
     if(b[i] > b[i+1]):
+        num_min = b[i+1]
 
 print(num_min)  # 1 출력
