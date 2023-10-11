@@ -19,8 +19,26 @@
 # 문제4) list b에서 최소값 찾기
 b = [22, 1, 4, 7, 98]
 num_min = b[0]
-for i in range(0, len(b)+1):
-    if(b[i] > b[i+1]):
-        num_min = b[i+1]
+for num in b:
+    if(num<num_min):
+        num_min=num
+num_min=b[0]    #22
+for x in b:
+    if(x < num_min):
+        num_min = x
 
-print(num_min)  # 1 출력
+print(f"최솟값: {num_min}")  # 1 출력
+
+# 문제 5)list c의 최솟값, 최댓값 찾기
+
+c = [2, 5, 7, 1, 8]
+num_min = c[0]
+for x in c:
+    if(x < num_min):
+        num_min = x
+num_max = c[0]
+for y in c:
+    if(num_max < y):
+        num_max = y
+print(f"최솟값:{num_min}")
+print(f"최댓값:{num_max}")
