@@ -15,6 +15,7 @@
 #   -URL: https://sites.google.com/chromium.org/driver/downloads
 # 2.실시간 (코드) 다운로드
 
+from datetime import datetime, timedelta
 import math
 import re
 import time
@@ -24,19 +25,20 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+
 # 1.Selenium 전용 웹 브라우저 구동
 options = Options()
 options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # 2.URL 접속
-url = "https://movie.daum.net/moviedb/grade?movieId=165591"
+url = "https://movie.daum.net/moviedb/grade?movieId=169137"
 driver.get(url)
 time.sleep(2)
 
 # 3.페이지 전체 코드 가져오기
 doc_html = driver.page_source
-print(doc_html)
+# print(doc_html)
 
 # 4.Selenium -> BeautifulSoup
 doc = BeautifulSoup(doc_html, "html.parser")
@@ -58,7 +60,6 @@ print("=" * 100)
 # 6-1. 전체 리뷰 수집
 total_review_cnt = doc.select("span.txt_netizen")[0].get_text()
 
-
 # 6-2. 전체 리뷰에서 숫자만 추출
 #   - 문자열 슬라이싱
 #   - 예) (187명)
@@ -73,9 +74,35 @@ click_cnt = math.ceil((num_review - 10) / 30)
 for i in range(click_cnt):
     # "평점 더보기" 클릭
     driver.find_element(By.CLASS_NAME, "link_fold").click()
-    time.sleep(1)
+    time.sleep(0.2)
 
 # 8.전체 소스 코드 가져오기
 doc_html = driver.page_source
 doc = BeautifulSoup(doc_html, "html.parser")
-review_list = doc.select("")
+review_list = doc.select("ul.list_comment > li")  # li가 188개 있음
+print(f"= 전체 리뷰: {len(review_list)}건")
+print("=" * 100)
+# item 리뷰 1건(평점, 리뷰, 작성자, 작성일자)
+for item in review_list:
+    review_score = item.select("div.ratings")[0].get_text()
+    print(f" - 평점: {review_score} 점")
+    review_content = item.select("p.desc_txt")[0].get_text()
+    # \n = 한 줄 개행 -> \n을 제거
+    review_content = re.sub("\n", "", review_content).strip()
+    print(f" - 리뷰: {review_content}")
+    review_writer = item.select("a.link_nick > span")[1].get_text()
+    print(f" - 작성자: {review_writer}")
+    review_date = item.select("span.txt_date")[0].get_text()
+    # 24시간 이내에 작성 된 리뷰의 날짜 표기 -> 00시간 전 -> 다음 영화 날짜(20XX.00.00. 00:00)
+    # 1.00시간 전으로 표기 되는 날짜 찾기
+    if len(review_date) < 7:
+        # 2."00시간" -> 숫자만 추출
+        reg_hour = int(re.sub(r"[^~0-9]", "", review_date))
+        # 3. 등록 일자 = 현재 시간 - 00
+        # print(f"현재 시간: {datetime.now()}")   # 년 부터 나노초 까지
+        review_date = datetime.now() - timedelta(hours=reg_hour)
+        # print(f"등록 시간: {review_date}")
+        # 4.계산된 등록일자 날짜 포맷 변경(다음 무비 양식으로)
+        review_date = review_date.strftime("%Y. %m. %d. %H:%M")
+    print(f" - 작성 일자: {review_date}")
+    print("=" * 100)
