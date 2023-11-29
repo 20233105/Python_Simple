@@ -33,7 +33,7 @@ options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # 2.URL 접속
-url = "https://movie.daum.net/moviedb/grade?movieId=169137"
+url = "https://movie.daum.net/moviedb/grade?movieId=146084"
 driver.get(url)
 time.sleep(2)
 
@@ -75,7 +75,7 @@ click_cnt = math.ceil((num_review - 10) / 30)
 for i in range(click_cnt):
     # "평점 더보기" 클릭
     driver.find_element(By.CLASS_NAME, "link_fold").click()
-    time.sleep(0.2)
+    time.sleep(0.5)
 
 # 8.전체 소스 코드 가져오기
 doc_html = driver.page_source
@@ -93,21 +93,28 @@ for item in review_list:
     print(f" - 리뷰: {review_content}")
     review_writer = item.select("a.link_nick > span")[1].get_text()
     print(f" - 작성자: {review_writer}")
+    # 다음 영화 리뷰 날짜 표시방법
+    # 1."조금 전"
+    # 2."X분 전"
+    # 3."X시간 전"
+    # 4.20XX.XX.XX HH:MM
     review_date = item.select("span.txt_date")[0].get_text()
-    # 24시간 이내에 작성 된 리뷰의 날짜 표기 -> 00시간 전 -> 다음 영화 날짜(20XX.00.00. 00:00)
-    # 1.00시간 전으로 표기 되는 날짜 찾기
-    if len(review_date) < 7:
-        # 2."00시간" -> 숫자만 추출
+
+    if review_date == "조금전":
+        review_date = datetime.now() - timedelta(seconds=59)
+        review_date = review_date.strftime("%Y. %m. %d. %H:%M")
+    elif review_date[-2:] == "분전":
+        reg_minute = int(re.sub(r"[^~0-9]", "", review_date))
+        review_date = datetime.now() - timedelta(minutes=reg_minute)
+        review_date = review_date.strftime("%Y. %m. %d. %H:%M")
+    elif review_date[-3:] == "시간전":
         reg_hour = int(re.sub(r"[^~0-9]", "", review_date))
-        # 3. 등록 일자 = 현재 시간 - 00
-        # print(f"현재 시간: {datetime.now()}")   # 년 부터 나노초 까지
         review_date = datetime.now() - timedelta(hours=reg_hour)
-        # print(f"등록 시간: {review_date}")
-        # 4.계산된 등록일자 날짜 포맷 변경(다음 무비 양식으로)
         review_date = review_date.strftime("%Y. %m. %d. %H:%M")
     print(f" - 작성 일자: {review_date}")
     print("=" * 100)
-
+    # 24시간 이내에 작성 된 리뷰의 날짜 표기 -> 00시간 전 -> 다음 영화 날짜(20XX.00.00. 00:00)
+    # 1.00시간 전으로 표기 되는 날짜 찾기
     # MariaDB 저장 (제목, 리뷰, 평점, 작성자, 작성 일자)
     data = {
         "title": movie_title,
