@@ -1,7 +1,7 @@
 # 다음 영화 리뷰 Table
 CREATE TABLE `tbl_review` (
 	`no` INT(10) NOT NULL AUTO_INCREMENT,
-	`title` VARCHAR(100) NOT NULL,
+	`title` VARCHAR(500) NOT NULL,
 	`review` VARCHAR(500),
 	`score` INT(10) NOT NULL DEFAULT '0',
 	`writer` VARCHAR(50) NULL,

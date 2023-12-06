@@ -58,3 +58,4 @@ def get_reviews():
         print(e)
     finally:
         conn.close()
+
